@@ -10,6 +10,7 @@
 #include <list>
 #include <assert.h>
 #include <vector>
+#include <array>
 
 using namespace std;
 const int maxNumberOfVertexes=1000007;
@@ -71,9 +72,9 @@ struct Tree {
     int root;
     int size;
 };
-void dfs(EmptySubTree* emptySubTrees, int& numberOfEmptySubTrees)
-void parseInputAndPrepare(Tree &tree,EmptySubTree* emptySubTrees,
-                          list<AvailableValue>& availableValues,int& numberOfEmptySubTrees){
+//void dfs(EmptySubTree* emptySubTrees, int& numberOfEmptySubTrees)
+void parseInputAndPrepare(Tree &tree,array<EmptySubTree, maxNumberOfVertexes> emptySubTrees,
+                          list<AvailableValue>& availableValues){
     cin>>tree.size;
     bool setValues[maxNumberOfVertexes];
     fill(false,tree.size+1,setValues); //nie wiem czy to dziala
@@ -122,11 +123,10 @@ void printTreeWithValues(Tree tree) {
 }
 void main2(){
     Tree tree;
-    EmptySubTree emptySubTrees[maxNumberOfVertexes];
+    array<EmptySubTree,maxNumberOfVertexes> emptySubTrees;
     list<AvailableValue> availableValues;
-    int numberOfVertexes, numberOfEmptySubTrees;
 
-    parseInputAndPrepare(tree,emptySubTrees,availableValues,numberOfEmptySubTrees);
+    parseInputAndPrepare(tree,emptySubTrees,availableValues,);
 
     for(int i=0;i<numberOfEmptySubTrees;i++) {
         //setValuesInFirstSubTree(emptySubTrees[i],availableValues, -1);
