@@ -71,6 +71,7 @@ struct Tree {
     int root;
     int size;
 };
+Tree tree;
 int dfs(Tree tree, int v, int parent,vector<EmptySubTree>& emptySubTrees) {
     Vertex* t=tree.tree;
     //Vertex* vp = &tree.tree[v];
@@ -117,11 +118,26 @@ void parseInputAndPrepare(Tree &tree,vector<EmptySubTree>& emptySubTrees,
     sort(emptySubTrees.begin(),emptySubTrees.end(),comp);
     delete [] setValues;
 }
-void addVertexValues(EmptySubTree tree, list<AvailableValue>& availableValues,
+bool decreaseIterator(list<AvailableValue>& availableValues, list<AvailableValue>::iterator it) {
+    if (availableValues.empty())
+        return false;
+    if (it == availableValues.begin())
+        return false;
+    it--;
+    return true;
+}
+void addVertexValues(EmptySubTree emptySubTree, list<AvailableValue>& availableValues,
                      list<AvailableValue>::iterator it) {
-    Vertex* ptrTree=tree.getRoot();
-    while(it!= availableValues.) {
-        //ptrTree->childs.size() == 1
+    Vertex* ptrTree=emptySubTree.getRoot();
+    if (!decreaseIterator(availableValues,it))
+        return;
+    while(1) {
+        ptrTree->value=it->getValue();
+        if (ptrTree->childs.size() != 1)
+            return;
+        if (!decreaseIterator(availableValues,it) )
+            return;
+        ptrTree=&tree.tree[ptrTree->childs.front()];
     }
 
 }
@@ -132,9 +148,7 @@ void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableV
         it++;values++;
     }
     if (values + unclearlyValues == tree.getSize()) {
-        it--;
         addVertexValues(tree,availableValues, it);
-        it++;
     }
     else if (values + unclearlyValues > tree.getSize()) {
         unclearlyValues = values + unclearlyValues;
@@ -145,7 +159,7 @@ void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableV
         it2++;
         availableValues.erase(itTmp);
     }
-    //delete()
+
 }
 void printTreeWithValues(Tree tree) {
     Vertex* t=tree.tree;
@@ -180,7 +194,6 @@ void printEmptySubTrees(vector<EmptySubTree> trees) {
 }
 
 void main2(){
-    Tree tree;
     list<AvailableValue> availableValues;
     vector<EmptySubTree> emptySubTrees;
     parseInputAndPrepare(tree,emptySubTrees,availableValues);
@@ -199,5 +212,4 @@ void main2(){
 int main() {
     freopen("example", "r", stdin);
     main2();
-    //int dupa[100000000000000];
 }
