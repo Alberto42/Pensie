@@ -10,12 +10,11 @@
 #include <list>
 #include <assert.h>
 #include <vector>
-#include <array>
+#include <algorithm>
 
 using namespace std;
-const int maxNumberOfVertexes=1000007;
 struct Vertex {
-    int value;
+    int value,number;
     vector<int> childs;
 
 };
@@ -84,6 +83,9 @@ int dfs(Tree tree, int v, int parent,vector<EmptySubTree>& emptySubTrees) {
     }
     return size;
 }
+bool comp(EmptySubTree a, EmptySubTree b) {
+    return a.getParentValue() < b.getParentValue();
+}
 void parseInputAndPrepare(Tree &tree,vector<EmptySubTree>& emptySubTrees,
                           list<AvailableValue>& availableValues){
     cin>>tree.size;
@@ -95,6 +97,7 @@ void parseInputAndPrepare(Tree &tree,vector<EmptySubTree>& emptySubTrees,
         setValues[i]=false;
 
     for(int i=0;i<tree.size;i++) {
+        tree.tree[i].number=i+1;
         int parent;
         cin>>parent;
         parent--;
@@ -111,12 +114,17 @@ void parseInputAndPrepare(Tree &tree,vector<EmptySubTree>& emptySubTrees,
             availableValues.push_back(AvailableValue(i));
     }
     dfs(tree,tree.root,tree.root,emptySubTrees);
-    free(setValues);
+    sort(emptySubTrees.begin(),emptySubTrees.end(),comp);
+    delete [] setValues;
 }
-//void addVertexValues(EmptySubTree tree, list<AvailableValue>& availableValues,
-//                     list<AvailableValue>::iterator it) {
-//
-//}
+void addVertexValues(EmptySubTree tree, list<AvailableValue>& availableValues,
+                     list<AvailableValue>::iterator it) {
+    Vertex* ptrTree=tree.getRoot();
+    while(it!= availableValues.) {
+        //ptrTree->childs.size() == 1
+    }
+
+}
 void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableValues, int& unclearlyValues) {
     auto it = availableValues.begin();
     int values=0;
@@ -125,15 +133,18 @@ void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableV
     }
     if (values + unclearlyValues == tree.getSize()) {
         it--;
-        //addVertexValues(tree,availableValues, it);
+        addVertexValues(tree,availableValues, it);
         it++;
     }
     else if (values + unclearlyValues > tree.getSize()) {
-        //unclearlyValues+=values-tree.size;
         unclearlyValues = values + unclearlyValues;
         unclearlyValues -= tree.getSize();
-
     } else assert(false);
+    for(auto it2=availableValues.begin();it2!=it;it2++) {
+        auto itTmp = it2;
+        it2++;
+        availableValues.erase(itTmp);
+    }
     //delete()
 }
 void printTreeWithValues(Tree tree) {
@@ -141,22 +152,49 @@ void printTreeWithValues(Tree tree) {
     for(int i=0;i<tree.size;i++) {
         cout<<t[i].value<<endl;
     }
-
 }
+void printAvailableValues(list<AvailableValue> l) {
+    auto it = l.begin();
+    cout<<"AvailableValues: ";
+    while(it!= l.end()) {
+        cout<<it->getValue()<<" ";
+        it++;
+    }
+    cout<<endl;
+}
+void printTree(Tree t) {
+    cout<<"Wypisuje drzewo:"<<endl;
+    for(int i=0;i<t.size;i++) {
+        cout<<i+1<<" "<<t.tree[i].value<<"   ";
+        for(auto it=t.tree[i].childs.begin();it!=t.tree[i].childs.end();it++) {
+            cout<<*it+1<<" ";
+        }
+        cout<<endl;
+    }
+}
+void printEmptySubTrees(vector<EmptySubTree> trees) {
+    cout<<"Wypisuje EmptySubTrees"<<endl;
+    for(auto it = trees.begin();it!=trees.end();it++) {
+        cout<<it->getRoot()->number<<"  "<<it->getParentValue()<<" "<<it->getSize()<<endl;
+    }
+}
+
 void main2(){
     Tree tree;
-    vector<EmptySubTree> emptySubTrees;
     list<AvailableValue> availableValues;
-
+    vector<EmptySubTree> emptySubTrees;
     parseInputAndPrepare(tree,emptySubTrees,availableValues);
 
-    int a;
-//    int unclearlyValues=0;
-//    for(auto i=emptySubTrees.begin();i!=emptySubTrees.end();i++){
-//        setValuesInFirstSubTree(*i,availableValues, unclearlyValues);
-//    }
-//    printTreeWithValues(tree);
-//    free(tree.tree);
+    printTree(tree);
+    printEmptySubTrees(emptySubTrees);
+    printAvailableValues(availableValues);
+
+    int unclearlyValues=0;
+    for(auto i=emptySubTrees.begin();i!=emptySubTrees.end();i++){
+        setValuesInFirstSubTree(*i,availableValues, unclearlyValues);
+    }
+    printTreeWithValues(tree);
+    delete [] tree.tree;
 }
 int main() {
     freopen("example", "r", stdin);
