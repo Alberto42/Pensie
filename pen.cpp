@@ -10,6 +10,7 @@
 #include <list>
 #include <assert.h>
 #include <vector>
+#include <array>
 
 using namespace std;
 const int maxNumberOfVertexes=1000007;
@@ -67,42 +68,50 @@ public:
  *  emptySubTrees are sorted ascending
  */
 struct Tree {
-    Vertex tree[maxNumberOfVertexes];
+    Vertex *tree;
     int root;
     int size;
 };
-int dfs(Tree tree, int v, int parent,EmptySubTree* emptySubTrees, int& numberOfEmptySubTrees) {
+int dfs(Tree tree, int v, int parent,vector<EmptySubTree>& emptySubTrees) {
     Vertex* t=tree.tree;
     //Vertex* vp = &tree.tree[v];
-    int size=0;
+    int size=1;
     for(auto i=t[v].childs.begin();i!=t[v].childs.end();i++) {
-        size+=dfs(tree,*i,v,emptySubTrees,numberOfEmptySubTrees);
+        size+=dfs(tree,*i,v,emptySubTrees);
     }
-    if (t[v].value == 0) {
-        //emptySubTrees[numberOfEmptySubTrees++]
+    if (t[v].value == 0 && t[parent].value > 0 || v == parent && v == 0 ) {
+        emptySubTrees.push_back(EmptySubTree(size,t[parent].value,&t[v]));
     }
+    return size;
 }
-void parseInputAndPrepare(Tree &tree,EmptySubTree* emptySubTrees,
-                          list<AvailableValue>& availableValues,int& numberOfEmptySubTrees){
+void parseInputAndPrepare(Tree &tree,vector<EmptySubTree>& emptySubTrees,
+                          list<AvailableValue>& availableValues){
     cin>>tree.size;
-    bool setValues[maxNumberOfVertexes];
-    fill(false,tree.size+1,setValues); //nie wiem czy to dziala
+    int size=tree.size;
+    tree.tree=new Vertex[size];
+    bool* setValues = new bool[size+1];
+
+    for(int i=0;i<=size;i++)
+        setValues[i]=false;
+
     for(int i=0;i<tree.size;i++) {
         int parent;
         cin>>parent;
         parent--;
-        tree.tree[parent].childs.push_back(i);
+        if (parent == i)
+            tree.root=i;
+        else
+            tree.tree[parent].childs.push_back(i);
 
         cin>>tree.tree[i].value;
         setValues[tree.tree[i].value]=true;
     }
-    numberOfEmptySubTrees=0;
     for(int i=1;i<=tree.size;i++) {
         if (setValues[i] == false)
             availableValues.push_back(AvailableValue(i));
     }
-
-
+    dfs(tree,tree.root,tree.root,emptySubTrees);
+    free(setValues);
 }
 //void addVertexValues(EmptySubTree tree, list<AvailableValue>& availableValues,
 //                     list<AvailableValue>::iterator it) {
@@ -128,20 +137,29 @@ void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableV
     //delete()
 }
 void printTreeWithValues(Tree tree) {
+    Vertex* t=tree.tree;
+    for(int i=0;i<tree.size;i++) {
+        cout<<t[i].value<<endl;
+    }
 
 }
 void main2(){
     Tree tree;
-    EmptySubTree emptySubTrees[maxNumberOfVertexes];
+    vector<EmptySubTree> emptySubTrees;
     list<AvailableValue> availableValues;
-    int numberOfVertexes, numberOfEmptySubTrees;
 
-    parseInputAndPrepare(tree,emptySubTrees,availableValues,numberOfEmptySubTrees);
+    parseInputAndPrepare(tree,emptySubTrees,availableValues);
 
-    for(int i=0;i<numberOfEmptySubTrees;i++) {
-        //setValuesInFirstSubTree(emptySubTrees[i],availableValues, -1);
-    }
-    printTreeWithValues(tree);
+    int a;
+//    int unclearlyValues=0;
+//    for(auto i=emptySubTrees.begin();i!=emptySubTrees.end();i++){
+//        setValuesInFirstSubTree(*i,availableValues, unclearlyValues);
+//    }
+//    printTreeWithValues(tree);
+//    free(tree.tree);
 }
 int main() {
+    freopen("example", "r", stdin);
+    main2();
+    //int dupa[100000000000000];
 }
