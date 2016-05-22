@@ -10,7 +10,6 @@
 #include <list>
 #include <assert.h>
 #include <vector>
-#include <array>
 
 using namespace std;
 const int maxNumberOfVertexes=1000007;
@@ -72,9 +71,19 @@ struct Tree {
     int root;
     int size;
 };
-//void dfs(EmptySubTree* emptySubTrees, int& numberOfEmptySubTrees)
-void parseInputAndPrepare(Tree &tree,array<EmptySubTree, maxNumberOfVertexes> emptySubTrees,
-                          list<AvailableValue>& availableValues){
+int dfs(Tree tree, int v, int parent,EmptySubTree* emptySubTrees, int& numberOfEmptySubTrees) {
+    Vertex* t=tree.tree;
+    //Vertex* vp = &tree.tree[v];
+    int size=0;
+    for(auto i=t[v].childs.begin();i!=t[v].childs.end();i++) {
+        size+=dfs(tree,*i,v,emptySubTrees,numberOfEmptySubTrees);
+    }
+    if (t[v].value == 0) {
+        //emptySubTrees[numberOfEmptySubTrees++]
+    }
+}
+void parseInputAndPrepare(Tree &tree,EmptySubTree* emptySubTrees,
+                          list<AvailableValue>& availableValues,int& numberOfEmptySubTrees){
     cin>>tree.size;
     bool setValues[maxNumberOfVertexes];
     fill(false,tree.size+1,setValues); //nie wiem czy to dziala
@@ -123,10 +132,11 @@ void printTreeWithValues(Tree tree) {
 }
 void main2(){
     Tree tree;
-    array<EmptySubTree,maxNumberOfVertexes> emptySubTrees;
+    EmptySubTree emptySubTrees[maxNumberOfVertexes];
     list<AvailableValue> availableValues;
+    int numberOfVertexes, numberOfEmptySubTrees;
 
-    parseInputAndPrepare(tree,emptySubTrees,availableValues,);
+    parseInputAndPrepare(tree,emptySubTrees,availableValues,numberOfEmptySubTrees);
 
     for(int i=0;i<numberOfEmptySubTrees;i++) {
         //setValuesInFirstSubTree(emptySubTrees[i],availableValues, -1);
