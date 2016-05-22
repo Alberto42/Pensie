@@ -20,14 +20,10 @@ struct Vertex {
 };
 class EmptySubTree {
 private:
-public:
-    EmptySubTree(int size, int parentValue, Vertex *root) : size(size), parentValue(parentValue), root(root) { }
-
-private:
     Vertex* root;
     int parentValue, size;
 public:
-
+    EmptySubTree(int size, int parentValue, Vertex *root) : root(root) , parentValue(parentValue),size(size) { }
     Vertex *getRoot() const {
         return root;
     }
@@ -76,7 +72,7 @@ int dfs(Tree tree, int v, int parent,vector<EmptySubTree>& emptySubTrees) {
     Vertex* t=tree.tree;
     //Vertex* vp = &tree.tree[v];
     int size=1;
-    for(auto i=t[v].childs.begin();i!=t[v].childs.end();i++) {
+    for(vector<int>::iterator i=t[v].childs.begin();i!=t[v].childs.end();i++) {
         size+=dfs(tree,*i,v,emptySubTrees);
     }
     if (t[v].value == 0 && t[parent].value > 0 || v == parent && v == 0 ) {
@@ -142,7 +138,7 @@ void addVertexValues(EmptySubTree emptySubTree, list<AvailableValue>& availableV
 
 }
 void setValuesInFirstSubTree(EmptySubTree emptySubTree, list<AvailableValue>& availableValues, int& unclearlyValues) {
-    auto it = availableValues.begin();
+    list<AvailableValue>::iterator it = availableValues.begin();
     int values=0;
     while(it!=availableValues.end() && it->getValue()< emptySubTree.getParentValue()) {
         it++;values++;
@@ -211,6 +207,7 @@ void main2(){
     delete [] tree.tree;
 }
 int main() {
-    freopen("example", "r", stdin);
+    //freopen("example", "r", stdin);
+    ios_base::sync_with_stdio(0);
     main2();
 }
