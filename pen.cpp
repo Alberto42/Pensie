@@ -1,11 +1,3 @@
-//============================================================================
-// Name        : Pensje.cpp
-// Author      : Albert Cieslak
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
-
 #include <iostream>
 #include <list>
 #include <assert.h>
@@ -16,7 +8,6 @@ using namespace std;
 struct Vertex {
     int value,number;
     vector<int> childs;
-
 };
 class EmptySubTree {
 private:
@@ -35,23 +26,15 @@ public:
     int getParentValue() const {
         return parentValue;
     }
-
-
-
-    //dlugosc sciezki do pierwszego rozgalezienia ?
 };
 class AvailableValue {
-private:
-public:
-    AvailableValue(int value) : value(value) { }
-
 private:
     int value;
 public:
     int getValue() const {
         return value;
     }
-
+    AvailableValue(int value) : value(value) { }
 /**
      * this flag is set to true if we are sure
      * that "value" may have more than one proper values.
@@ -151,8 +134,8 @@ void setValuesInFirstSubTree(EmptySubTree emptySubTree, list<AvailableValue>& av
         unclearlyValues = values + unclearlyValues;
         unclearlyValues -= emptySubTree.getSize();
     } else assert(false);
-    for(auto it2=availableValues.begin();it2!=it;) {
-        auto itTmp = it2;
+    for(list<AvailableValue>::iterator it2=availableValues.begin();it2!=it;) {
+        list<AvailableValue>::iterator itTmp = it2;
         it2++;
         availableValues.erase(itTmp);
     }
@@ -164,43 +147,43 @@ void printTreeWithValues(Tree tree) {
         cout<<t[i].value<<endl;
     }
 }
-void printAvailableValues(list<AvailableValue> l) {
-    auto it = l.begin();
-    cout<<"AvailableValues: ";
-    while(it!= l.end()) {
-        cout<<it->getValue()<<" ";
-        it++;
-    }
-    cout<<endl;
-}
-void printTree(Tree t) {
-    cout<<"Wypisuje drzewo:"<<endl;
-    for(int i=0;i<t.size;i++) {
-        cout<<i+1<<" "<<t.tree[i].value<<"   ";
-        for(auto it=t.tree[i].childs.begin();it!=t.tree[i].childs.end();it++) {
-            cout<<*it+1<<" ";
-        }
-        cout<<endl;
-    }
-}
-void printEmptySubTrees(vector<EmptySubTree> trees) {
-    cout<<"Wypisuje EmptySubTrees"<<endl;
-    for(auto it = trees.begin();it!=trees.end();it++) {
-        cout<<it->getRoot()->number<<"  "<<it->getParentValue()<<" "<<it->getSize()<<endl;
-    }
-}
+//void printAvailableValues(list<AvailableValue> l) {
+//    auto it = l.begin();
+//    cout<<"AvailableValues: ";
+//    while(it!= l.end()) {
+//        cout<<it->getValue()<<" ";
+//        it++;
+//    }
+//    cout<<endl;
+//}
+//void printTree(Tree t) {
+//    cout<<"Wypisuje drzewo:"<<endl;
+//    for(int i=0;i<t.size;i++) {
+//        cout<<i+1<<" "<<t.tree[i].value<<"   ";
+//        for(auto it=t.tree[i].childs.begin();it!=t.tree[i].childs.end();it++) {
+//            cout<<*it+1<<" ";
+//        }
+//        cout<<endl;
+//    }
+//}
+//void printEmptySubTrees(vector<EmptySubTree> trees) {
+//    cout<<"Wypisuje EmptySubTrees"<<endl;
+//    for(auto it = trees.begin();it!=trees.end();it++) {
+//        cout<<it->getRoot()->number<<"  "<<it->getParentValue()<<" "<<it->getSize()<<endl;
+//    }
+//}
 
 void main2(){
     list<AvailableValue> availableValues;
     vector<EmptySubTree> emptySubTrees;
     parseInputAndPrepare(tree,emptySubTrees,availableValues);
 
-    printTree(tree);
-    printEmptySubTrees(emptySubTrees);
-    printAvailableValues(availableValues);
+//    printTree(tree);
+//    printEmptySubTrees(emptySubTrees);
+//    printAvailableValues(availableValues);
 
     int unclearlyValues=0;
-    for(auto i=emptySubTrees.begin();i!=emptySubTrees.end();i++){
+    for(vector<EmptySubTree>::iterator i=emptySubTrees.begin();i!=emptySubTrees.end();i++){
         setValuesInFirstSubTree(*i,availableValues, unclearlyValues);
     }
     printTreeWithValues(tree);
