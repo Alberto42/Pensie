@@ -5,6 +5,7 @@
 #include <algorithm>
 
 using namespace std;
+const int INF=1000000007;
 struct Vertex {
     int value,number;
     vector<int> childs;
@@ -58,8 +59,11 @@ int dfs(Tree tree, int v, int parent,vector<EmptySubTree>& emptySubTrees) {
     for(vector<int>::iterator i=t[v].childs.begin();i!=t[v].childs.end();i++) {
         size+=dfs(tree,*i,v,emptySubTrees);
     }
-    if (t[v].value == 0 && t[parent].value > 0 || v == parent && v == 0 ) {
+    if (t[v].value == 0 && t[parent].value > 0) {
         emptySubTrees.push_back(EmptySubTree(size,t[parent].value,&t[v]));
+    }
+    if (v == parent && v == 0) {
+        emptySubTrees.push_back(EmptySubTree(size,INF,&t[v]));
     }
     return size;
 }
