@@ -9,67 +9,129 @@
 #include <iostream>
 #include <list>
 #include <assert.h>
+#include <vector>
+
 using namespace std;
 const int maxNumberOfVertexes=1000007;
 struct Vertex {
-    int leftChild,rightChild,value;
+    int value;
+    vector<int> childs;
+
 };
-struct EmptySubTree {
+class EmptySubTree {
+private:
+public:
+    EmptySubTree(int size, int parentValue, Vertex *root) : size(size), parentValue(parentValue), root(root) { }
+
+private:
     Vertex* root;
     int parentValue, size;
+public:
+
+    Vertex *getRoot() const {
+        return root;
+    }
+
+    int getSize() const {
+        return size;
+    }
+
+    int getParentValue() const {
+        return parentValue;
+    }
+
+
+
     //dlugosc sciezki do pierwszego rozgalezienia ?
 };
-struct AvailableValue {
+class AvailableValue {
+private:
+public:
+    AvailableValue(int value) : value(value) { }
+
+private:
     int value;
-    /**
+public:
+    int getValue() const {
+        return value;
+    }
+
+/**
      * this flag is set to true if we are sure
      * that "value" may have more than one proper values.
      */
-    bool isSetUnclearly=false;
+    //bool isSetUnclearly=false;
 };
 /**
  *  availableValues are sorted ascending
  *  emptySubTrees are sorted ascending
- *
  */
-void parseInputAndPrepare(Vertex* tree,int& numberOfVertexes,EmptySubTree* emptySubTrees,
+struct Tree {
+    Vertex tree[maxNumberOfVertexes];
+    int root;
+    int size;
+};
+void dfs(EmptySubTree* emptySubTrees, int& numberOfEmptySubTrees)
+void parseInputAndPrepare(Tree &tree,EmptySubTree* emptySubTrees,
                           list<AvailableValue>& availableValues,int& numberOfEmptySubTrees){
-}
-void addVertexValues(EmptySubTree tree, list<AvailableValue>& availableValues,
-                     list<AvailableValue>::iterator it) {
+    cin>>tree.size;
+    bool setValues[maxNumberOfVertexes];
+    fill(false,tree.size+1,setValues); //nie wiem czy to dziala
+    for(int i=0;i<tree.size;i++) {
+        int parent;
+        cin>>parent;
+        parent--;
+        tree.tree[parent].childs.push_back(i);
+
+        cin>>tree.tree[i].value;
+        setValues[tree.tree[i].value]=true;
+    }
+    numberOfEmptySubTrees=0;
+    for(int i=1;i<=tree.size;i++) {
+        if (setValues[i] == false)
+            availableValues.push_back(AvailableValue(i));
+    }
+
 
 }
-void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableValues, int unclearlyValues) {
+//void addVertexValues(EmptySubTree tree, list<AvailableValue>& availableValues,
+//                     list<AvailableValue>::iterator it) {
+//
+//}
+void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableValues, int& unclearlyValues) {
     auto it = availableValues.begin();
     int values=0;
-    while(it!=availableValues.end() && it->value< tree.parentValue) {
+    while(it!=availableValues.end() && it->getValue()< tree.getParentValue()) {
         it++;values++;
     }
-    if (values == tree.size) {
+    if (values + unclearlyValues == tree.getSize()) {
         it--;
         //addVertexValues(tree,availableValues, it);
         it++;
     }
-    else if (values > tree.size) {
-
+    else if (values + unclearlyValues > tree.getSize()) {
+        //unclearlyValues+=values-tree.size;
+        unclearlyValues = values + unclearlyValues;
+        unclearlyValues -= tree.getSize();
 
     } else assert(false);
+    //delete()
 }
-void printTreeWithValues(Vertex* tree,int& numberOfVertexes) {
+void printTreeWithValues(Tree tree) {
 
 }
 void main2(){
-    Vertex tree[maxNumberOfVertexes];
+    Tree tree;
     EmptySubTree emptySubTrees[maxNumberOfVertexes];
     list<AvailableValue> availableValues;
     int numberOfVertexes, numberOfEmptySubTrees;
 
-    parseInputAndPrepare(tree,numberOfVertexes,emptySubTrees,availableValues,numberOfEmptySubTrees);
+    parseInputAndPrepare(tree,emptySubTrees,availableValues,numberOfEmptySubTrees);
 
     for(int i=0;i<numberOfEmptySubTrees;i++) {
-        setValuesInFirstSubTree(emptySubTrees[i],availableValues, -1);
+        //setValuesInFirstSubTree(emptySubTrees[i],availableValues, -1);
     }
-    printTreeWithValues(tree,numberOfVertexes);
+    printTreeWithValues(tree);
 }
 int main() {
 }
