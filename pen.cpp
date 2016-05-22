@@ -118,7 +118,7 @@ void parseInputAndPrepare(Tree &tree,vector<EmptySubTree>& emptySubTrees,
     sort(emptySubTrees.begin(),emptySubTrees.end(),comp);
     delete [] setValues;
 }
-bool decreaseIterator(list<AvailableValue>& availableValues, list<AvailableValue>::iterator it) {
+bool decreaseIterator(list<AvailableValue>& availableValues, list<AvailableValue>::iterator& it) {
     if (availableValues.empty())
         return false;
     if (it == availableValues.begin())
@@ -141,20 +141,21 @@ void addVertexValues(EmptySubTree emptySubTree, list<AvailableValue>& availableV
     }
 
 }
-void setValuesInFirstSubTree(EmptySubTree tree, list<AvailableValue>& availableValues, int& unclearlyValues) {
+void setValuesInFirstSubTree(EmptySubTree emptySubTree, list<AvailableValue>& availableValues, int& unclearlyValues) {
     auto it = availableValues.begin();
     int values=0;
-    while(it!=availableValues.end() && it->getValue()< tree.getParentValue()) {
+    while(it!=availableValues.end() && it->getValue()< emptySubTree.getParentValue()) {
         it++;values++;
     }
-    if (values + unclearlyValues == tree.getSize()) {
-        addVertexValues(tree,availableValues, it);
+    if (values + unclearlyValues == emptySubTree.getSize()) {
+        addVertexValues(emptySubTree,availableValues, it);
+        unclearlyValues=0;
     }
-    else if (values + unclearlyValues > tree.getSize()) {
+    else if (values + unclearlyValues > emptySubTree.getSize()) {
         unclearlyValues = values + unclearlyValues;
-        unclearlyValues -= tree.getSize();
+        unclearlyValues -= emptySubTree.getSize();
     } else assert(false);
-    for(auto it2=availableValues.begin();it2!=it;it2++) {
+    for(auto it2=availableValues.begin();it2!=it;) {
         auto itTmp = it2;
         it2++;
         availableValues.erase(itTmp);
