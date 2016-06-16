@@ -36,33 +36,24 @@ public:
         return value;
     }
     AvailableValue(int value) : value(value) { }
-/**
-     * this flag is set to true if we are sure
-     * that "value" may have more than one proper values.
-     */
-    //bool isSetUnclearly=false;
 };
-/**
- *  availableValues are sorted ascending
- *  emptySubTrees are sorted ascending
- */
 struct Tree {
     Vertex *tree;
     int root;
     int size;
 };
 Tree tree;
-int dfs(Tree tree, int v, int parent,vector<EmptySubTree>& emptySubTrees) {
+int getEmptySubTreesRecursively(Tree tree, int v, int parent, vector<EmptySubTree> &emptySubTrees) {
     Vertex* t=tree.tree;
     //Vertex* vp = &tree.tree[v];
     int size=1;
     for(vector<int>::iterator i=t[v].childs.begin();i!=t[v].childs.end();i++) {
-        size+=dfs(tree,*i,v,emptySubTrees);
+        size+= getEmptySubTreesRecursively(tree, *i, v, emptySubTrees);
     }
     if (t[v].value == 0 && t[parent].value > 0) {
         emptySubTrees.push_back(EmptySubTree(size,t[parent].value,&t[v]));
     }
-    if (v == parent && v == 0) {
+    if (t[v].value == 0 && v == parent && v == 0) {
         emptySubTrees.push_back(EmptySubTree(size,INF,&t[v]));
     }
     return size;
@@ -97,7 +88,7 @@ void parseInputAndPrepare(Tree &tree,vector<EmptySubTree>& emptySubTrees,
         if (setValues[i] == false)
             availableValues.push_back(AvailableValue(i));
     }
-    dfs(tree,tree.root,tree.root,emptySubTrees);
+    getEmptySubTreesRecursively(tree, tree.root, tree.root, emptySubTrees);
     sort(emptySubTrees.begin(),emptySubTrees.end(),comp);
     delete [] setValues;
 }
@@ -148,43 +139,14 @@ void setValuesInFirstSubTree(EmptySubTree emptySubTree, list<AvailableValue>& av
 void printTreeWithValues(Tree tree) {
     Vertex* t=tree.tree;
     for(int i=0;i<tree.size;i++) {
-        cout<<t[i].value<<endl;
+        cout<<t[i].value<<"\n";
     }
 }
-//void printAvailableValues(list<AvailableValue> l) {
-//    auto it = l.begin();
-//    cout<<"AvailableValues: ";
-//    while(it!= l.end()) {
-//        cout<<it->getValue()<<" ";
-//        it++;
-//    }
-//    cout<<endl;
-//}
-//void printTree(Tree t) {
-//    cout<<"Wypisuje drzewo:"<<endl;
-//    for(int i=0;i<t.size;i++) {
-//        cout<<i+1<<" "<<t.tree[i].value<<"   ";
-//        for(auto it=t.tree[i].childs.begin();it!=t.tree[i].childs.end();it++) {
-//            cout<<*it+1<<" ";
-//        }
-//        cout<<endl;
-//    }
-//}
-//void printEmptySubTrees(vector<EmptySubTree> trees) {
-//    cout<<"Wypisuje EmptySubTrees"<<endl;
-//    for(auto it = trees.begin();it!=trees.end();it++) {
-//        cout<<it->getRoot()->number<<"  "<<it->getParentValue()<<" "<<it->getSize()<<endl;
-//    }
-//}
 
-void main2(){
+void calculateSalaries(){
     list<AvailableValue> availableValues;
     vector<EmptySubTree> emptySubTrees;
     parseInputAndPrepare(tree,emptySubTrees,availableValues);
-
-//    printTree(tree);
-//    printEmptySubTrees(emptySubTrees);
-//    printAvailableValues(availableValues);
 
     int unclearlyValues=0;
     for(vector<EmptySubTree>::iterator i=emptySubTrees.begin();i!=emptySubTrees.end();i++){
@@ -194,7 +156,6 @@ void main2(){
     delete [] tree.tree;
 }
 int main() {
-    //freopen("example", "r", stdin);
     ios_base::sync_with_stdio(0);
-    main2();
+    calculateSalaries();
 }
